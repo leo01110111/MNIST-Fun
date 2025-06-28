@@ -1,0 +1,6 @@
+{
+    "testing_images_dir": "/Users/student/Documents/Code/MNIST-Fun/data/t10k-images.idx3-ubyte",
+    "testing_labels_dir": "/Users/student/Documents/Code/MNIST-Fun/data/t10k-labels.idx1-ubyte",
+    "training_images_dir": "/Users/student/Documents/Code/MNIST-Fun/data/train-images.idx3-ubyte",
+    "training_labels_dir": "/Users/student/Documents/Code/MNIST-Fun/data/train-labels.idx1-ubyte"
+}
