@@ -32,7 +32,9 @@ class Loader():
             img = img.reshape(28,28)
             images.append(img)
         
+        images = np.array(images)  # Convert to numpy array first
         images = torch.tensor(images, dtype=torch.float32)
+        labels = torch.tensor(labels, dtype=torch.long)
         
         return images, labels
     
