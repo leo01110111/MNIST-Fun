@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import torch
+import torch.utils.data
 import torch.nn as nn
 import torch.optim as optim
 from torch.distributions.categorical import Categorical
@@ -16,7 +17,7 @@ class MLP(nn.Module):
 
         self.checkpoint_file = os.path.join(chkpt_dir, 'mlp')
         self.network = nn.Sequential(
-                nn.Linear(*input_dims, l1_dims),
+                nn.Linear(input_dims, l1_dims),
                 nn.ReLU(),
                 nn.Linear(l1_dims, l2_dims),
                 nn.ReLU(),
@@ -37,15 +38,15 @@ class MLP(nn.Module):
         torch.save(self.state_dict(), self.checkpoint_file)
 
     def load_checkpoint(self):
-        self.load_state_dict(T.load(self.checkpoint_file))
+        self.load_state_dict(torch.load(self.checkpoint_file))
 
     def train(self, training_dataset, testing_dataset, batch_size=60,
               epoch=4):
         
-        train_dataset = torch.TensorDataset(training_dataset[0], training_dataset[1])
-        test_dataset = torch.TensorDataset(testing_dataset[0], testing_dataset[1])
-        train_loader = torch.DataLoader(train_dataset, batch_size, shuffle=True)
-        test_loader = torch.DataLoader(test_dataset, batch_size, shuffle=False)
+        train_dataset = torch.utils.data.TensorDataset(training_dataset[0], training_dataset[1])
+        test_dataset = torch.utils.data.TensorDataset(testing_dataset[0], testing_dataset[1])
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size, shuffle=True)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size, shuffle=False)
 
         criteria = nn.CrossEntropyLoss() #define loss function.
 
@@ -60,7 +61,7 @@ class MLP(nn.Module):
                 loss = criteria(prediction, labels)
                 
                 self.optimizer.zero_grad()
-                loss.backwards()
+                loss.backward()
                 self.optimizer.step()
                 
                 training_loss += loss.item()
@@ -71,7 +72,7 @@ class MLP(nn.Module):
                 
                 testing_loss += loss.item()
            
-            #print(f"Epoch {i}, Training Loss: {training_loss}")
-            #print(f"Epoch {i}, Testing Loss: {testing_loss}") #does an epoch have to mean a run thru all data points or could it also mean a run thru of a batch
-        #print("Training Complete")
+            print(f"Epoch {i}, Training Loss: {training_loss}")
+            print(f"Epoch {i}, Testing Loss: {testing_loss}") #does an epoch have to mean a run thru all data points or could it also mean a run thru of a batch
+        print("Training Complete")
         
